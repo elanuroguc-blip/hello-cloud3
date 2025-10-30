@@ -11,11 +11,8 @@ CORS(app)
 
 
 DATABASE_URL = os.getenv(
-
-"DATABASE_URL",
-
-"postgresql://volkan:201eAcwsVd7cf1jyxQL2F1wn4VZ3FSbW@dpg-d3t90iur433s73b5q070-a.oregon-postgres.render.com/cloud_db_gwjr"
-
+    "DATABASE_URL",
+    "postgresql://hello_cloud3_db_5c33_user:v0zPhI7xUyBJiQXRzhSM9dOnUAT8FsJS@dpg-d3tjhd0gjchc73fan1s0-a.oregon-postgres.render.com/hello_cloud3_db_5c33"
 )
 
 

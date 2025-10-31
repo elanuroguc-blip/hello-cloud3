@@ -38,9 +38,10 @@ li { background: white; margin: 5px auto; width: 200px; padding: 8px; border-rad
 """
 
 @app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        isim = request.form.get("isim")
+ if request.method == "POST":
+     # 1. Formdan İKİ veriyi de al
+     isim = request.form.get("isim")
+     sehir = request.form.get("sehir") # <--
         requests.post(API_URL + "/ziyaretciler", json={"isim": isim})
         return redirect("/")
 

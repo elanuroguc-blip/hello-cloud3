@@ -38,15 +38,21 @@ li { background: white; margin: 5px auto; width: 200px; padding: 8px; border-rad
 """
 
 @app.route("/", methods=["GET", "POST"])
- if request.method == "POST":
-     # 1. Formdan İKİ veriyi de al
-     isim = request.form.get("isim")
-     sehir = request.form.get("sehir") # <--
-        requests.post(API_URL + "/ziyaretciler", json={"isim": isim})
+def index():
+    if request.method == "POST":
+        isim = request.form.get("isim")
+        sehir = request.form.get("sehir")
+
+        gonderilecek_veri = {"isim": isim, "sehir": sehir}
+
+        requests.post(API_URL + "/ziyaretciler", json=gonderilecek_veri)
         return redirect("/")
 
     resp = requests.get(API_URL + "/ziyaretciler")
-    isimler = resp.json() if resp.status_code == 200 else []
+    isimler = []
+    if resp.status_code == 200:
+        isimler = resp.json()
+
     return render_template_string(HTML, isimler=isimler)
 
 if __name__ == "__main__":

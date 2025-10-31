@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-API_URL = "https://hello-cloud3-11.onrender.com"
+API_URL = "https://hello-cloud3-13.onrender.com"
 
 HTML = """
 <!doctype html>
@@ -27,6 +27,7 @@ li { background: white; margin: 5px auto; width: 200px; padding: 8px; border-rad
 <button type="submit">Gönder</button>
 </form>
 <h3>Ziyaretçiler:</h3>
+<h3>Şehirler:</h3>
 <ul>
 {% for ad in isimler %}
 <li>{{ ad }}</li>

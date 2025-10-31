@@ -18,6 +18,11 @@ def ziyaretciler():
     conn = connect_db()
     cur = conn.cursor()
 
+    @app.route("/Şehirler", methods=["GET", "POST"])
+def Şehirler():
+    conn = connect_db()
+    cur = conn.cursor()
+
     cur.execute("CREATE TABLE IF NOT EXISTS ziyaretciler (id SERIAL PRIMARY KEY, isim TEXT)")
 
     if request.method == "POST":

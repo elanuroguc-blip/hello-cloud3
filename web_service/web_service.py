@@ -23,7 +23,7 @@ li { background: white; margin: 5px auto; width: 200px; padding: 8px; border-rad
 <p>Adını yaz</p>
 <form method="POST">
 <input type="text" name="isim" placeholder="Adını yaz" required>
-<input type="text" name="isim" placeholder="Şehrini yaz" required>
+<input type="text" name="sehir" placeholder="Şehrini yaz" required>
 <button type="submit">Gönder</button>
 </form>
 <h3>Ziyaretçiler:</h3>

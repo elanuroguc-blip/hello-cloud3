@@ -10,7 +10,7 @@ HTML = """
 <!doctype html>
 <html>
 <head>
-    <title>Ziyaretçi Defteri</title>
+    <title>Elanur Ögüç</title>
     <style>
         body { font-family: Arial; text-align: center; padding: 50px; background: #eef2f3; }
         h1 { color: #333; }

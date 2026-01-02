@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app) # Web servisinden gelen istekleri kabul etmek için şart
 
 # Veritabanı bağlantı adresi
-DATABASE_URL = "postgresql://hello_cloud3_db_5c33_user:v0zPhI7xUyBJiQXRzhSM9DOnUAT8FsJS@dpg-d3tjhd0gjchc73fan1s0-a.oregon-postgres.render.com/hello_cloud3_db_5c33"
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def connect_db():
     return psycopg2.connect(DATABASE_URL)
@@ -19,6 +19,7 @@ def ziyaretciler():
     
     # Tablo yoksa oluştur
     cur.execute("CREATE TABLE IF NOT EXISTS ziyaretciler (id SERIAL PRIMARY KEY, isim TEXT, sehir TEXT)")
+    conn.commit()
     
     if request.method == "POST":
         data = request.json

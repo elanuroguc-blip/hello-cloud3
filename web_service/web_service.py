@@ -5,7 +5,7 @@ import time
 app = Flask(__name__)
 
 # ÖNEMLİ: Kendi en güncel API adresinizi buraya yazın
-API_URL = "https://hello-cloud3-32.onrender.com"
+API_URL = "https://hello-cloud3-37.onrender.com"
 
 HTML = """
 <!doctype html>

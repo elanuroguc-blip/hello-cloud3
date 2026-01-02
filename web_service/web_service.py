@@ -3,71 +3,65 @@ import requests
 
 app = Flask(__name__)
 
+# ÖNEMLİ: api_service adresinizi buraya yazın (sonunda / olmasın)
 API_URL = "https://hello-cloud3-20.onrender.com"
 
 HTML = """
 <!doctype html>
 <html>
-  <head>
-    <title>Elanur Ögüç/title>
+<head>
+    <title>Ziyaretçi Defteri</title>
     <style>
-      body { font-family: Arial; text-align: center; padding: 50px; background: #eef2f3; }
-      h1 { color: #333; }
-      input { padding: 10px; font-size: 16px; margin: 5px; }
-      button { padding: 10px 15px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; }
-      li { background: white; margin: 5px auto; padding: 10px; border-radius: 5px; max-width: 350px; text-align: left; }
-      ul { list-style-type: none; padding: 0; }
-      form { margin-bottom: 20px; }
+        body { font-family: Arial; text-align: center; padding: 50px; background: #eef2f3; }
+        h1 { color: #333; }
+        input { padding: 10px; font-size: 16px; margin: 5px; }
+        button { padding: 10px 15px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        ul { list-style-type: none; padding: 0; max-width: 350px; margin: 20px auto; text-align: left; }
+        li { background: white; margin: 5px auto; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <h1>Mikro Hizmetli Selam!</h1>
-    
     <form method="POST">
-      <input type="text" name="isim" placeholder="Adını yaz" required>
-      <input type="text" name="sehir" placeholder="Şehrini yaz" required>
-      <button type="submit">Gönder</button>
+        <input type="text" name="isim" placeholder="Adınızı yaz" required>
+        <input type="text" name="sehir" placeholder="Şehrinizi yaz" required>
+        <button type="submit">Gönder</button>
     </form>
-    
+
     <h3>Ziyaretçiler ve Şehirleri:</h3>
     <ul>
-      {% for ziyaretci in isimler %}
-        <li>{{ ziyaretci.isim }} - ({{ ziyaretci.sehir }})</li>
-      {% endfor %}
+        {% for ziyaretci in isimler %}
+            <li>{{ ziyaretci.isim }} - {{ ziyaretci.sehir }}</li>
+        {% endfor %}
     </ul>
-    </body>
+</body>
 </html>
 """
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    # 1. VERİ GÖNDERME (POST) KISMI
     if request.method == "POST":
         isim = request.form.get("isim")
         sehir = request.form.get("sehir")
         
-        if isim and sehir:  # Boş veri gitmesini engellemek için kontrol
-            gonderilecek_veri = {"isim": isim, "sehir": sehir}
+        if isim and sehir:
             try:
-                # API'ye POST isteği gönderiyoruz
-                requests.post(API_URL + "/ziyaretciler", json=gonderilecek_veri)
+                # Veriyi API'ye gönder
+                requests.post(f"{API_URL}/ziyaretciler", json={"isim": isim, "sehir": sehir}, timeout=5)
             except Exception as e:
-                print(f"API Gönderim Hatası: {e}")
+                print(f"Hata oluştu: {e}")
         
-        # İşlem bittikten sonra sayfayı tazelemek için yönlendiriyoruz
         return redirect("/")
 
-    # 2. VERİ ÇEKME (GET) KISMI
-    # Bu kısım her sayfa açıldığında veya redirect sonrası çalışır
+    # Sayfa her yüklendiğinde verileri çek
     isimler = []
     try:
-        resp = requests.get(API_URL + "/ziyaretciler")
+        resp = requests.get(f"{API_URL}/ziyaretciler", timeout=5)
         if resp.status_code == 200:
-            isimler = resp.json()  # API'den gelen listeyi alıyoruz
+            isimler = resp.json()
     except Exception as e:
-        print(f"API Veri Çekme Hatası: {e}")
+        print(f"Veri çekme hatası: {e}")
 
-    # Son olarak verileri HTML içine gönderiyoruz
     return render_template_string(HTML, isimler=isimler)
 
 if __name__ == "__main__":

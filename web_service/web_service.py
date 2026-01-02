@@ -4,7 +4,7 @@ import requests
 app = Flask(__name__)
 
 # ÖNEMLİ: api_service adresinizi buraya yazın (sonunda / olmasın)
-API_URL = "https://hello-cloud3-30.onrender.com"
+API_URL = "https://hello-cloud3-32.onrender.com"
 
 HTML = """
 <!doctype html>

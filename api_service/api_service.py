@@ -6,7 +6,8 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-DATABASE_URL = "postgresql://hello_cloud3_db_5c33_user:v0zPhI7xUyBJiQXRzhSM9DOnUAT8FsJS@dpg-d3tjhd0gjchc73fan1s0-a.oregon-postgres.render.com/hello_cloud3_db_5c33?"
+# SSL parametresi eklendi (Bağlantı hatalarını çözer)
+DATABASE_URL = "postgresql://hello_cloud3_db_5c33_user:v0zPhI7xUyBJiQXRzhSM9DOnUAT8FsJS@dpg-d3tjhd0gjchc73fan1s0-a.oregon-postgres.render.com/hello_cloud3_db_5c33?sslmode=require"
 
 @app.route("/ziyaretciler", methods=["GET", "POST"])
 def ziyaretciler():
@@ -15,7 +16,7 @@ def ziyaretciler():
         conn = psycopg2.connect(DATABASE_URL)
         cur = conn.cursor()
         
-        # Tabloyu oluştur (Eğer daha önceden hatalı oluştuysa diye kontrol eder)
+        # Tablo kontrolü
         cur.execute("CREATE TABLE IF NOT EXISTS ziyaretciler (id SERIAL PRIMARY KEY, isim TEXT, sehir TEXT)")
         conn.commit()
 
@@ -33,7 +34,7 @@ def ziyaretciler():
         return jsonify(isimler)
     
     except Exception as e:
-        print(f"Veritabanı hatası: {e}")
+        print(f"Hata: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         if conn:

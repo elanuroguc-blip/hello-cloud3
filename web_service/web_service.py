@@ -1,43 +1,46 @@
-from flask import Flask, render_template_string, request, redirect
-import requests
-import time
+web_service web_service.py from flask import Flask, render_template_string, request
 
 app = Flask(__name__)
+application = app
 
-# ÖNEMLİ: Kendi en güncel API adresinizi buraya yazın
-API_URL = "https://hello-cloud3-37.onrender.com"
+# Verileri (isim ve şehir ikilisi olarak) bu listede tutacağız
+ziyaretci_listesi = []
 
 HTML = """
 <!doctype html>
 <html>
 <head>
-    <title>Ziyaretçi Defteri</title>
+    <title>Elanur Ögüç</title>
     <style>
-        body { font-family: Arial; text-align: center; padding: 50px; background: #f4f7f6; }
-        .container { background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        input { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; }
-        ul { list-style: none; padding: 0; margin-top: 20px; text-align: left; }
-        li { padding: 8px; border-bottom: 1px solid #eee; }
+        body { font-family: Arial; text-align: center; padding: 50px; background: #eef2f3; }
+        h1 { color: #333; }
+        form { margin: 20px auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        input { padding: 10px; font-size: 16px; width: 250px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        ul { list-style: none; padding: 0; }
+        li { background: white; margin: 8px auto; width: 300px; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .city { color: #666; font-size: 0.9em; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Ziyaretçi Defteri</h1>
-        <form method="POST">
-            <input type="text" name="isim" placeholder="Adınız" required>
-            <input type="text" name="sehir" placeholder="Şehriniz" required>
-            <button type="submit">Gönder</button>
-        </form>
-        <h3>Son Ziyaretçiler:</h3>
-        <ul>
-            {% for z in isimler %}
-                <li><strong>{{ z.isim }}</strong> - {{ z.sehir }}</li>
-            {% else %}
-                <li>Henüz kimse yazmadı.</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <h1>Mikro Hizmetli Selam!</h1>
+    <p>Bilgilerini yaz, selamını bırak</p>
+    
+    <form method="POST">
+        <input type="text" name="isim" placeholder="Adınızı yazın" required>
+        <input type="text" name="sehir" placeholder="Yaşadığınız şehir" required>
+        <button type="submit">Selam Gönder</button>
+    </form>
+
+    <h3>Son Ziyaretçiler:</h3>
+    <ul>
+        {% for kisi in ziyaretciler %}
+            <li>
+                <strong>{{ kisi.ad }}</strong> <br>
+                <span class="city">📍 {{ kisi.sehir }}</span>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
 """
@@ -47,26 +50,16 @@ def index():
     if request.method == "POST":
         isim = request.form.get("isim")
         sehir = request.form.get("sehir")
+        
         if isim and sehir:
-            try:
-                # Veriyi gönder
-                requests.post(f"{API_URL}/ziyaretciler", json={"isim": isim, "sehir": sehir}, timeout=10)
-                # Veritabanına yazılması için çok kısa bir bekleme (Render yavaşlığı için)
-                time.sleep(0.5)
-            except:
-                pass
-        return redirect("/")
+            # İsim ve şehri bir sözlük (dictionary) olarak listenin başına ekle
+            ziyaretci_listesi.insert(0, {"ad": isim, "sehir": sehir})
+            
+            # Listenin çok uzamasını engellemek için son 10 kaydı tut
+            if len(ziyaretci_listesi) > 10:
+                ziyaretci_listesi.pop()
 
-    # Verileri çekme işlemi
-    isimler = []
-    try:
-        resp = requests.get(f"{API_URL}/ziyaretciler", timeout=10)
-        if resp.status_code == 200:
-            isimler = resp.json()
-    except Exception as e:
-        print(f"Veri çekme hatası: {e}")
-
-    return render_template_string(HTML, isimler=isimler)
+    return render_template_string(HTML, ziyaretciler=ziyaretci_listesi)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=5000)
